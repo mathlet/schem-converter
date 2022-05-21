@@ -96,3 +96,9 @@ out/
 
 # Virtualenv
 venv
+
+# Assets
+*.png
+*.jpg
+*.schem
+*.schematic
