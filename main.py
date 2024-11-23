@@ -72,8 +72,7 @@ def to_schem(img_path):
         # Getting the block with the closest color to the image pixel and
         # appending it to the palette list
         closest = min(blockjson, key=lambda k: math.dist(rgb, blockjson[k]))
-        if c == (240, 122):
-            print(f'Closest for {c}: {closest}')
+        # print(f'Closest for {c}: {closest}')
         if closest not in palette_blocks:
             palette_blocks.append(closest)
 
@@ -121,4 +120,4 @@ def to_image(nbtin):
 
 if __name__ == '__main__':
     # add_blocks([])
-    write_nbt('assets/vi.schem', to_schem('assets/vi.jpg'))
+    write_nbt('assets/trumpfasa.schem', to_schem('assets/trumpfasa.jpg'))
