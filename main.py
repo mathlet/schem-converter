@@ -72,24 +72,29 @@ def to_schem(img_path):
         # Getting the block with the closest color to the image pixel and
         # appending it to the palette list
         closest = min(blockjson, key=lambda k: math.dist(rgb, blockjson[k]))
+        if c == (240, 122):
+            print(f'Closest for {c}: {closest}')
         if closest not in palette_blocks:
             palette_blocks.append(closest)
 
             # The palette holds all the blocks that are used in a schematic. The field name
-            # is the block name and the value is the index. This index is referenced in the 
+            # is the block name and the value is the index. This index is referenced in the
             # BlockData field to identify which block is present at a given coord
-            palette[f'minecraft:{closest}'] = nbt.TAG_Int(value=palette_blocks.index(closest))
+            palette[f'minecraft:{closest}'] = nbt.TAG_Int(
+                value=palette_blocks.index(closest))
 
         # Index blocks by x + z * Width + y * Width * Length. If we keep the same
         # order as the image coordinates the image comes out flipped.
-        indices[c[0] + c[1] * im.size[0] + 1 * im.size[0] * im.size[1]] = palette_blocks.index(closest)
+        indices[c[0] + c[1] * im.size[0] + 1 * im.size[0]
+                * im.size[1]] = palette_blocks.index(closest)
 
     # Set the palette length to length of the de-duped palette list
-    genfile.tags.append(nbt.TAG_Int(name='PaletteMax', value=len(palette_blocks)))
+    genfile.tags.append(nbt.TAG_Int(
+        name='PaletteMax', value=len(palette_blocks)))
     genfile.tags.append(palette)
 
     # A list of integers each referencing a block index from the palette is created
-    # by sorting the indices dict. This list is then turned into a byte array as 
+    # by sorting the indices dict. This list is then turned into a byte array as
     # that is the type needed by the NBT file. This prevents the image from being
     # flipped.
     blockdata.value = bytearray([indices[i] for i in sorted(indices)])
@@ -105,7 +110,8 @@ def to_image(nbtin):
     blockjson = json.load(open('block.json'))
 
     # Map palette index to RGB color vector
-    palette_dict = {nbtin['Palette'][t].value: blockjson[t.replace('minecraft:', '')] for t in nbtin['Palette']}
+    palette_dict = {nbtin['Palette'][t].value: blockjson[t.replace(
+        'minecraft:', '')] for t in nbtin['Palette']}
 
     # Insert pixel data into image by referencing palette dict keys
     img.putdata([tuple(palette_dict[b]) for b in nbtin['BlockData'].value])
@@ -115,4 +121,4 @@ def to_image(nbtin):
 
 if __name__ == '__main__':
     # add_blocks([])
-    write_nbt('craftlet.schem', to_schem('craftlet.png'))
+    write_nbt('assets/vi.schem', to_schem('assets/vi.jpg'))
